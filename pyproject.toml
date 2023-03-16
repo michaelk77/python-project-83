@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "page_analyzer"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">3.6"
 flask = "^2.2.3"
 
 
