@@ -4,16 +4,30 @@ from page_analyzer import db
 import validators
 from urllib.parse import urlparse
 
-from page_analyzer.db import get_site_by_name
+from page_analyzer.db import get_site_by_name, get_info_by_id
 
 app = Flask(__name__)
+
+
+def check_transformation(data):
+    all = []
+    for i in sorted(data, key=lambda x: x[0], reverse=True):
+        ans = {"id": i[0], "status_code": i[1],
+               "created_at": i[2].strftime("%d/%m/%Y")}
+        all.append(ans)
+    return all
 
 
 def transform(urls):
     new_urls = []
     for url in sorted(urls, key=lambda x: x[0], reverse=True):
-        new_urls.append(
-            {"id": url[0], "name": url[1]})
+        if url[3]:
+            new_urls.append(
+                {"id": url[0], "name": url[1], "status_code": url[3],
+                 "last_check": url[4].strftime("%d/%m/%Y")})
+        else:
+            new_urls.append(
+                {"id": url[0], "name": url[1]})
     return new_urls
 
 
@@ -21,8 +35,6 @@ def transform_user(url):
     new_url = {"id": url[0], "name": url[1],
                "created_at": url[2].strftime("%d/%m/%Y")}
     return new_url
-
-
 
 
 @app.route('/')
@@ -59,11 +71,19 @@ def urls():
 def site(site_id):
     try:
         site = transform_user(db.get_site(site_id))
-        return render_template('site.html', url=site,
+        info = check_transformation(get_info_by_id(site_id))
+        print(info)
+        return render_template('site.html', url=site, checks=info,
                                messages=get_flashed_messages())
     except:
         return render_template('site.html', messages=[("danger",
                                                        "Site not found")])
+
+
+@app.route('/urls/<int:site_id>/checks', methods=['POST'])
+def check(site_id):
+    db.add_check(site_id, 200)
+    return redirect(url_for('site', site_id=site_id))
 
 
 def get_site(site_id):

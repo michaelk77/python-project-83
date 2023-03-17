@@ -20,7 +20,14 @@ def all_sites():
     conn = psycopg2.connect(DATABASE_URL)
 
     with conn.cursor() as cur:
-        cur.execute("SELECT * FROM urls")
+        cur.execute("""SELECT u.*, c.status_code, c.created_at
+FROM urls u
+LEFT JOIN (
+  SELECT DISTINCT ON (url_id) *
+  FROM url_checks
+  ORDER BY url_id, id DESC
+) c ON u.id = c.url_id
+""")
         ans = cur.fetchall()
     conn.close()
     return ans
@@ -44,3 +51,26 @@ def get_site_by_name(site_name):
         ans = cur.fetchone()
     conn.close()
     return ans
+
+
+def get_info_by_id(site_id):
+    conn = psycopg2.connect(DATABASE_URL)
+
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT id, status_code, created_at FROM url_checks WHERE url_id = %s",
+            (site_id,))
+        ans = cur.fetchall()
+    conn.close()
+    return ans
+
+
+def add_check(site_id, status_code):
+    conn = psycopg2.connect(DATABASE_URL)
+
+    with conn.cursor() as cur:
+        cur.execute(
+            "INSERT INTO url_checks (url_id, status_code, created_at) "
+            "VALUES (%s, %s, %s)", (site_id, status_code, 'now()'))
+        conn.commit()
+    conn.close()
