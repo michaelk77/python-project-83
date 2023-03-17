@@ -34,3 +34,13 @@ def get_site(site_id):
         ans = cur.fetchone()
     conn.close()
     return ans
+
+
+def get_site_by_name(site_name):
+    conn = psycopg2.connect(DATABASE_URL)
+
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM urls WHERE name = %s", (site_name,))
+        ans = cur.fetchone()
+    conn.close()
+    return ans

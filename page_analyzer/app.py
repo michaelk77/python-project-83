@@ -1,13 +1,17 @@
 from flask import Flask, render_template, request, redirect, url_for, \
     get_flashed_messages
 from page_analyzer import db
+import validators
+from urllib.parse import urlparse
+
+from page_analyzer.db import get_site_by_name
 
 app = Flask(__name__)
 
 
 def transform(urls):
     new_urls = []
-    for url in urls:
+    for url in sorted(urls, key=lambda x: x[0], reverse=True):
         new_urls.append(
             {"id": url[0], "name": url[1]})
     return new_urls
@@ -19,12 +23,6 @@ def transform_user(url):
     return new_url
 
 
-def validate_url(url):
-    if not (url.startswith('http://') or url.startswith('https://')):
-        return False
-    if url == '':
-        return False
-    return True
 
 
 @app.route('/')
@@ -37,11 +35,16 @@ def urls():
     if request.method == 'POST':
         try:
             url_site = request.form['url']
+            parsed_url = urlparse(url_site)
+            norm_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
         except KeyError:
             return render_template('index.html',
                                    messages=[("danger",
                                               "Please enter a valid URL")])
-        if validate_url(url_site):
+        if validators.url(norm_url):
+            if get_site_by_name(norm_url):
+                urls = transform(db.all_sites())
+                return render_template('urls.html', urls=urls)
             db.add_site(request.form)
         else:
             return render_template('index.html',
