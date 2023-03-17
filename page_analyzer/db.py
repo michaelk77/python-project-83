@@ -58,7 +58,8 @@ def get_info_by_id(site_id):
 
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT id, status_code, created_at FROM url_checks WHERE url_id = %s",
+            "SELECT id, status_code, created_at FROM url_checks WHERE "
+            "url_id = %s",
             (site_id,))
         ans = cur.fetchall()
     conn.close()

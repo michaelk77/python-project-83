@@ -75,7 +75,8 @@ def site(site_id):
         print(info)
         return render_template('site.html', url=site, checks=info,
                                messages=get_flashed_messages())
-    except:
+    except Exception as e:
+        print(e)
         return render_template('site.html', messages=[("danger",
                                                        "Site not found")])
 
