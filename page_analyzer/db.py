@@ -66,6 +66,16 @@ def get_info_by_id(site_id):
     return ans
 
 
+def get_id_by_name(site_name):
+    conn = psycopg2.connect(DATABASE_URL)
+
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM urls WHERE name = %s", (site_name,))
+        ans = cur.fetchone()
+    conn.close()
+    return ans
+
+
 def add_check(site_id, status_code, h1, title, description):
     conn = psycopg2.connect(DATABASE_URL)
 

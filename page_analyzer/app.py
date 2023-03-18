@@ -70,23 +70,29 @@ def urls():
                                        with_categories=True))
         if validators.url(norm_url):
             if get_site_by_name(norm_url):
-                urls = transform(db.all_sites())
-                return render_template('urls.html', urls=urls)
-            flash("Страница успешно добавлена", "alert-success")
-            db.add_site(request.form)
+                flash("Страница уже существует", "alert")
+            else:
+                flash("Страница успешно добавлена", "alert-success")
+                db.add_site(request.form)
+            site_id = db.get_id_by_name(norm_url)
+            site = transform_user(get_site_by_name(norm_url))
+            info = check_transformation(get_info_by_id(site_id))
+            return render_template('site.html', url=site, checks=info,
+                                   messages=get_flashed_messages(
+                                       with_categories=True))
         else:
             flash("Please enter a valid URL", "alert-danger")
             return render_template('index.html',
                                    messages=get_flashed_messages(
                                        with_categories=True))
-        return redirect(url_for('urls'))
     urls = transform(db.all_sites())
     return render_template('urls.html', urls=urls,
-                           messages=get_flashed_messages(with_categories=True))
+                           messages=get_flashed_messages(
+                               with_categories=True))
 
 
 @app.route('/urls/<int:site_id>')
-def site(site_id, ):
+def site(site_id):
     site = db.get_site(site_id)
     if site:
         site = transform_user(site)
