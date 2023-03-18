@@ -75,7 +75,7 @@ def urls():
                 flash("Страница успешно добавлена", "alert-success")
                 db.add_site(request.form)
             site_id = db.get_id_by_name(norm_url)
-            site = transform_user(get_site_by_name(norm_url))
+            site = transform_user(db.get_site(site_id))
             info = check_transformation(get_info_by_id(site_id))
             return render_template('site.html', url=site, checks=info,
                                    messages=get_flashed_messages(
