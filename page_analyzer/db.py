@@ -58,20 +58,22 @@ def get_info_by_id(site_id):
 
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT id, status_code, created_at FROM url_checks WHERE "
-            "url_id = %s",
+            "SELECT id, status_code, created_at, h1, title, description "
+            "FROM url_checks WHERE url_id = %s",
             (site_id,))
         ans = cur.fetchall()
     conn.close()
     return ans
 
 
-def add_check(site_id, status_code):
+def add_check(site_id, status_code, h1, title, description):
     conn = psycopg2.connect(DATABASE_URL)
 
     with conn.cursor() as cur:
         cur.execute(
-            "INSERT INTO url_checks (url_id, status_code, created_at) "
-            "VALUES (%s, %s, %s)", (site_id, status_code, 'now()'))
+            "INSERT INTO url_checks (url_id, status_code, created_at, h1, "
+            "title, description)"
+            "VALUES (%s, %s, %s, %s, %s, %s)",
+            (site_id, status_code, 'now()', h1, title, description))
         conn.commit()
     conn.close()
