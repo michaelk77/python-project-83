@@ -69,11 +69,11 @@ def urls():
                                    messages=get_flashed_messages(
                                        with_categories=True))
         if validators.url(norm_url):
-            if get_site_by_name(norm_url):
-                flash("Страница уже существует", "alert")
+            if db.get_id_by_name(norm_url):
+                flash("Страница уже существует", "alert-info")
             else:
                 flash("Страница успешно добавлена", "alert-success")
-                db.add_site(request.form)
+                db.add_site(norm_url)
             site_id = db.get_id_by_name(norm_url)
             site = transform_user(db.get_site(site_id))
             info = check_transformation(get_info_by_id(site_id))

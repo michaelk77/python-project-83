@@ -11,7 +11,7 @@ def add_site(site):
 
     with conn.cursor() as cur:
         cur.execute("INSERT INTO urls (name, created_at) VALUES (%s, %s)",
-                    (site["url"], 'now()'))
+                    (site, 'now()'))
         conn.commit()
     conn.close()
 

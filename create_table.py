@@ -17,4 +17,15 @@ def create_table():
     conn.close()
 
 
+def delete_table():
+    conn = psycopg2.connect(DATABASE_URL)
+
+    with conn.cursor() as cur:
+        cur.execute("DROP TABLE IF EXISTS urls CASCADE")
+        cur.execute("DROP TABLE IF EXISTS url_checks CASCADE")
+
+    conn.commit()
+    conn.close()
+
+
 create_table()
