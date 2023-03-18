@@ -64,7 +64,7 @@ def urls():
             parsed_url = urlparse(url_site)
             norm_url = f'{parsed_url.scheme}://{parsed_url.netloc}'
         except KeyError:
-            flash("Please enter a valid URL", "alert-danger")
+            flash("Некорректный URL", "alert-danger")
             return render_template('index.html',
                                    messages=get_flashed_messages(
                                        with_categories=True))
@@ -81,7 +81,7 @@ def urls():
                                    messages=get_flashed_messages(
                                        with_categories=True))
         else:
-            flash("Please enter a valid URL", "alert-danger")
+            flash("Некорректный URL", "alert-danger")
             return render_template('index.html',
                                    messages=get_flashed_messages(
                                        with_categories=True)), 422
