@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, \
-    get_flashed_messages
+    get_flashed_messages, flash
 from page_analyzer import db
 import validators
 from urllib.parse import urlparse
-
+import requests
 from page_analyzer.db import get_site_by_name, get_info_by_id
 
 app = Flask(__name__)
+app.secret_key = 'super secret key'
 
 
 def check_transformation(data):
@@ -68,23 +69,28 @@ def urls():
 
 
 @app.route('/urls/<int:site_id>')
-def site(site_id):
+def site(site_id, message=[]):
     try:
         site = transform_user(db.get_site(site_id))
         info = check_transformation(get_info_by_id(site_id))
         print(info)
         return render_template('site.html', url=site, checks=info,
-                               messages=get_flashed_messages())
+                               messages=message)
     except Exception as e:
         print(e)
-        return render_template('site.html', messages=[("danger",
-                                                       "Site not found")])
+        return render_template('index.html', messages=[("alert-danger",
+                                                        "Site not found")])
 
 
 @app.route('/urls/<int:site_id>/checks', methods=['POST'])
 def check(site_id):
-    db.add_check(site_id, 200)
-    return redirect(url_for('site', site_id=site_id))
+    try:
+        request_data = requests.get(db.get_site(site_id)[1])
+        db.add_check(site_id, request_data.status_code)
+        return redirect(url_for('site', site_id=site_id))
+    except Exception as e:
+        message = [("alert-danger", "Произошла ошибка при проверке")]
+        return site(site_id, message=message)
 
 
 def get_site(site_id):
