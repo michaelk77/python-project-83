@@ -72,6 +72,7 @@ def urls():
             if get_site_by_name(norm_url):
                 urls = transform(db.all_sites())
                 return render_template('urls.html', urls=urls)
+            flash("Страница успешно добавлена", "alert-success")
             db.add_site(request.form)
         else:
             flash("Please enter a valid URL", "alert-danger")
