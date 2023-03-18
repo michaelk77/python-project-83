@@ -43,7 +43,6 @@ def get_site(site_id):
     return ans
 
 
-
 def get_info_by_id(site_id):
     conn = psycopg2.connect(DATABASE_URL)
 

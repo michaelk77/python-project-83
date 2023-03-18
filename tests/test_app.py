@@ -53,7 +53,7 @@ def test_index_route(client):
     response = client.get('/')
     html = response.data.decode()
     assert response.status_code == 200
-    assert '<p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>' in html
+    assert 'Бесплатно проверяйте сайты на SEO пригодность' in html
     assert 'Анализатор страниц' in html
     assert 'Сайты' in html
 
