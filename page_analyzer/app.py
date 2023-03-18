@@ -4,7 +4,7 @@ from page_analyzer import db
 import validators
 from urllib.parse import urlparse
 import requests
-from page_analyzer.db import get_site_by_name, get_info_by_id
+from page_analyzer.db import get_info_by_id
 import bs4
 
 app = Flask(__name__)
@@ -118,8 +118,8 @@ def check(site_id):
             out.find("meta", attrs={"name": 'description'}))
         if description:
             description = description['content'].strip()
-        print(h1, title, description)
         db.add_check(site_id, status, h1, title, description)
+        flash("Страница успешно проверена", "alert-success")
         return redirect(url_for('site', site_id=site_id))
     except Exception as e:
         print(e)
