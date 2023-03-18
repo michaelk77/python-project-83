@@ -52,7 +52,7 @@ def transform_user(url):
 
 
 @app.route('/')
-def hello_world():
+def index():
     return render_template('index.html')
 
 
@@ -123,10 +123,6 @@ def check(site_id):
     except requests.RequestException:
         flash("Произошла ошибка при проверке", "alert-danger")
         return site(site_id)
-
-
-def get_site(site_id):
-    return render_template('site.html', site=db.get_site(site_id))
 
 
 if __name__ == '__main__':

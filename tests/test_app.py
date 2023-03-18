@@ -1,7 +1,8 @@
 from datetime import datetime
 from unittest.mock import Mock
 from page_analyzer.app import lencheck, transform, transform_user, \
-    check_transformation
+    check_transformation, app
+import pytest
 
 
 def test_lencheck():
@@ -39,3 +40,39 @@ def test_check_transformation():
          "created_at": datetime.now().strftime("%d/%m/%Y"),
          "h1": "H1", "title": "Title", "description": "Description"}]
     assert check_transformation(info) == expected_result
+
+
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    client = app.test_client()
+    yield client
+
+
+def test_index_route(client):
+    response = client.get('/')
+    html = response.data.decode()
+    assert response.status_code == 200
+    assert '<p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>' in html
+    assert 'Анализатор страниц' in html
+    assert 'Сайты' in html
+
+
+def test_urls_route(client):
+    response = client.get('/urls')
+    html = response.data.decode()
+    assert response.status_code == 200
+    assert '<h1>Сайты</h1>' in html
+    assert 'Анализатор страниц' in html
+
+
+def test_not_found_route(client):
+    response = client.get('/urls/44')
+    html = response.data.decode()
+    assert "Site not found" in html
+    assert "Анализатор страниц" in html
+
+
+def test_not_found_check_route(client):
+    response = client.get('/urls/44/check')
+    assert response.status_code == 404
