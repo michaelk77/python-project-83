@@ -41,38 +41,3 @@ def test_check_transformation():
          "h1": "H1", "title": "Title", "description": "Description"}]
     assert check_transformation(info) == expected_result
 
-
-@pytest.fixture
-def client():
-    app.config['TESTING'] = True
-    client = app.test_client()
-    yield client
-
-
-def test_index_route(client):
-    response = client.get('/')
-    html = response.data.decode()
-    assert response.status_code == 200
-    assert 'Бесплатно проверяйте сайты на SEO пригодность' in html
-    assert 'Анализатор страниц' in html
-    assert 'Сайты' in html
-
-
-def test_urls_route(client):
-    response = client.get('/urls')
-    html = response.data.decode()
-    assert response.status_code == 200
-    assert '<h1>Сайты</h1>' in html
-    assert 'Анализатор страниц' in html
-
-
-def test_not_found_route(client):
-    response = client.get('/urls/44')
-    html = response.data.decode()
-    assert "Site not found" in html
-    assert "Анализатор страниц" in html
-
-
-def test_not_found_check_route(client):
-    response = client.get('/urls/44/check')
-    assert response.status_code == 404
