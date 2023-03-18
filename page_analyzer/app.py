@@ -111,6 +111,9 @@ def check(site_id):
     try:
         request_data = requests.get(db.get_site(site_id)[1])
         status = request_data.status_code
+        if status != 200:
+            flash("Произошла ошибка при проверке", "alert-danger")
+            return redirect(url_for('site', site_id=site_id))
         out = bs4.BeautifulSoup(request_data.text, 'html.parser')
         h1 = lencheck(out.find('h1'))
         title = lencheck(out.find('title'))
