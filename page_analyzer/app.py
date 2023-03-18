@@ -84,7 +84,7 @@ def urls():
             flash("Please enter a valid URL", "alert-danger")
             return render_template('index.html',
                                    messages=get_flashed_messages(
-                                       with_categories=True))
+                                       with_categories=True)), 422
     urls = transform(db.all_sites())
     return render_template('urls.html', urls=urls,
                            messages=get_flashed_messages(
