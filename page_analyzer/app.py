@@ -76,8 +76,7 @@ def site(site_id, message=[]):
         print(info)
         return render_template('site.html', url=site, checks=info,
                                messages=message)
-    except Exception as e:
-        print(e)
+    finally:
         return render_template('index.html', messages=[("alert-danger",
                                                         "Site not found")])
 
@@ -88,7 +87,7 @@ def check(site_id):
         request_data = requests.get(db.get_site(site_id)[1])
         db.add_check(site_id, request_data.status_code)
         return redirect(url_for('site', site_id=site_id))
-    except Exception as e:
+    finally:
         message = [("alert-danger", "Произошла ошибка при проверке")]
         return site(site_id, message=message)
 
