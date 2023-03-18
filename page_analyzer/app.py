@@ -81,7 +81,8 @@ def urls():
                                        with_categories=True))
         return redirect(url_for('urls'))
     urls = transform(db.all_sites())
-    return render_template('urls.html', urls=urls)
+    return render_template('urls.html', urls=urls,
+                           messages=get_flashed_messages())
 
 
 @app.route('/urls/<int:site_id>')
