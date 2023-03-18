@@ -52,6 +52,16 @@ def get_site_by_name(site_name):
     conn.close()
     return ans
 
+def create_table():
+    conn = psycopg2.connect(DATABASE_URL)
+
+    with conn.cursor() as cur:
+        with open('database.sql') as f:
+            cur.execute(f.read())
+
+    conn.commit()
+    conn.close()
+
 
 def get_info_by_id(site_id):
     conn = psycopg2.connect(DATABASE_URL)
