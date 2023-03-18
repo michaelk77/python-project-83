@@ -17,7 +17,7 @@ package-install:
 	pip install --user dist/*.whl
 
 coverage:
-	poetry run pytest --cov=tests/ --cov-report xml
+	poetry run pytest --cov=page_analyzer --cov-report xml
 
 PORT ?= 8000
 start:

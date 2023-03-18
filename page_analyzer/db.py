@@ -73,7 +73,7 @@ def get_id_by_name(site_name):
         cur.execute("SELECT id FROM urls WHERE name = %s", (site_name,))
         ans = cur.fetchone()
     conn.close()
-    return ans
+    return ans[0]
 
 
 def add_check(site_id, status_code, h1, title, description):

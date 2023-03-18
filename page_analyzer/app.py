@@ -75,11 +75,7 @@ def urls():
                 flash("Страница успешно добавлена", "alert-success")
                 db.add_site(norm_url)
             site_id = db.get_id_by_name(norm_url)
-            site = transform_user(db.get_site(site_id))
-            info = check_transformation(get_info_by_id(site_id))
-            return render_template('site.html', url=site, checks=info,
-                                   messages=get_flashed_messages(
-                                       with_categories=True))
+            return redirect(url_for('site', site_id=site_id))
         else:
             flash("Некорректный URL", "alert-danger")
             return render_template('index.html',
@@ -124,8 +120,7 @@ def check(site_id):
         db.add_check(site_id, status, h1, title, description)
         flash("Страница успешно проверена", "alert-success")
         return redirect(url_for('site', site_id=site_id))
-    except Exception as e:
-        print(e)
+    except requests.RequestException:
         flash("Произошла ошибка при проверке", "alert-danger")
         return site(site_id)
 
