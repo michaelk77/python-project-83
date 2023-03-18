@@ -1,9 +1,8 @@
 import pytest
 from datetime import datetime
 from unittest.mock import Mock
-from page_analyzer import db
-from page_analyzer.app import app, transform, transform_user, check_transformation, lencheck
-
+from page_analyzer.app import transform, transform_user, \
+    check_transformation, lencheck
 
 
 def test_lencheck():
@@ -41,4 +40,3 @@ def test_check_transformation():
          "created_at": datetime.now().strftime("%d/%m/%Y"),
          "h1": "H1", "title": "Title", "description": "Description"}]
     assert check_transformation(info) == expected_result
-
