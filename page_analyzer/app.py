@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, \
-    get_flashed_messages, flash
+from flask import Flask, render_template, request, redirect, url_for
 from page_analyzer import db
 import validators
 from urllib.parse import urlparse
