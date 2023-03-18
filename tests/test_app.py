@@ -1,8 +1,7 @@
-import pytest
 from datetime import datetime
 from unittest.mock import Mock
-from page_analyzer.app import transform, transform_user, \
-    check_transformation, lencheck
+from page_analyzer.app import lencheck, transform, transform_user, \
+    check_transformation
 
 
 def test_lencheck():
